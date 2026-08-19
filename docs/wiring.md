@@ -37,13 +37,6 @@
 | 云台 | Yaw/Pitch | GPIO1 / GPIO2 | 两个 SG90 信号线 |
 | INMP441 | SCK/WS/SD | GPIO14 / GPIO3 / GPIO44 | I2S 时钟、帧同步、数据 |
 
-> **资源冲突警告：** 当前整机把编码器信号连接到 GPIO35、GPIO36 和
-> GPIO37；这些引脚同时属于当前 ESP32-S3 的 Octal PSRAM 总线。当前接线
-> 状态下，Camera Benchmark 和 Camera Streaming 固件都在 PSRAM 初始化阶段
-> 失败并重启。尚未完成断开编码器连接的 A/B 测试，因此不能把编码器外部
-> 连接写成已验证的直接根因。重新开发前必须重新分配编码器 GPIO，并先完成
-> 断线 A/B 验证。
-
 ## TB6612 与 TT 电机
 
 TB6612 的 `VM` 与 `VCC` 是不同电源：`VM` 接 6V，`VCC` 接 3V3，`STBY` 在当前基线中建议直接拉到 3V3。
