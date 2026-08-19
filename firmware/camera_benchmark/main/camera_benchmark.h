@@ -9,6 +9,7 @@ typedef enum {
 } camera_benchmark_result_t;
 
 camera_benchmark_result_t camera_run_baseline_benchmark(void);
+camera_benchmark_result_t camera_run_reference_soak(void);
 bool camera_run_quality_diagnostic(void);
 bool camera_run_fb_count_diagnostic(void);
 bool camera_run_psram_dma_diagnostic(void);

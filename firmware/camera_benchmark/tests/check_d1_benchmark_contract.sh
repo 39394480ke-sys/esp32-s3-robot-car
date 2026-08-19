@@ -5,8 +5,9 @@ set -euo pipefail
 project_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source_file="$project_dir/main/camera_benchmark.c"
 header_file="$project_dir/main/camera_benchmark.h"
+app_file="$project_dir/main/app_main.c"
 
-test -f "$source_file" && test -f "$header_file" || {
+test -f "$source_file" && test -f "$header_file" && test -f "$app_file" || {
   echo "missing camera benchmark module" >&2
   exit 1
 }
@@ -22,6 +23,7 @@ for contract in \
   heap_caps_get_free_size \
   heap_caps_get_minimum_free_size \
   heap_caps_get_largest_free_block \
+  camera_run_baseline_benchmark \
   D1_BENCHMARK_RESULT \
   average_fps \
   minimum_window_frames \
@@ -32,5 +34,10 @@ for contract in \
     exit 1
   }
 done
+
+if grep -Eq 'camera_run_(quality|fb_count|psram_dma|qqvga_[a-z_]+)_(diagnostic|benchmark)' "$app_file"; then
+  echo "application runs a D1 diagnostic instead of the QVGA baseline" >&2
+  exit 1
+fi
 
 echo "D1 benchmark contract checks passed"

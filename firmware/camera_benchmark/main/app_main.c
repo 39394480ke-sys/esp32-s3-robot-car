@@ -27,9 +27,9 @@ void app_main(void)
             ESP_LOGE(TAG, "continuous safety check skipped because single-frame check failed");
         }
         if (continuous_safe) {
-            benchmark_result = camera_run_qqvga_short_diagnostic();
+            benchmark_result = camera_run_reference_soak();
         } else {
-            ESP_LOGE(TAG, "QQVGA diagnostic skipped because safety checks failed");
+            ESP_LOGE(TAG, "D2 Camera reference soak skipped because safety checks failed");
         }
     } else {
         ESP_LOGE(TAG, "D1 safety check skipped because D0 probe failed");

@@ -1,0 +1,19 @@
+menu "Robot Wi-Fi"
+
+    config ROBOT_ID
+        string "Robot identifier"
+        default "robot-01"
+
+    config ROBOT_WIFI_SSID
+        string "Wi-Fi SSID"
+        default ""
+
+    config ROBOT_WIFI_PASSWORD
+        string "Wi-Fi password"
+        default ""
+
+    config D2_WIFI_RECONNECT_SELF_TEST
+        bool "Run one controlled Wi-Fi reconnect after bring-up"
+        default n
+
+endmenu
