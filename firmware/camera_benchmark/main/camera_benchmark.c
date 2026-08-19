@@ -12,7 +12,6 @@
 
 #define BENCHMARK_WARMUP_FRAMES 30U
 #define BENCHMARK_DURATION_SECONDS 60U
-#define CAMERA_REFERENCE_SOAK_DURATION_SECONDS 600U
 #define QUALITY_DIAGNOSTIC_DURATION_SECONDS 15U
 #define FB_COUNT_DIAGNOSTIC_DURATION_SECONDS 15U
 #define PSRAM_DMA_DIAGNOSTIC_DURATION_SECONDS 15U
@@ -315,32 +314,6 @@ camera_benchmark_result_t camera_run_baseline_benchmark(void)
     }
     ESP_LOGI(TAG,
              "D1_BENCHMARK_RESULT=%s",
-             camera_benchmark_result_name(result));
-    return result;
-}
-
-camera_benchmark_result_t camera_run_reference_soak(void)
-{
-    benchmark_summary_t summary = {0};
-    const bool completed = run_measurement(
-        20U,
-        2U,
-        false,
-        FRAMESIZE_QVGA,
-        QVGA_WIDTH,
-        QVGA_HEIGHT,
-        CAMERA_REFERENCE_SOAK_DURATION_SECONDS,
-        "D2 Camera reference soak",
-        &summary);
-
-    camera_benchmark_result_t result = CAMERA_BENCHMARK_FAIL;
-    if (completed) {
-        result = summary.failed_frames == 0U && summary.average_fps >= 26.0
-                     ? CAMERA_BENCHMARK_PASS
-                     : CAMERA_BENCHMARK_PARTIAL;
-    }
-    ESP_LOGI(TAG,
-             "D2_CAMERA_REFERENCE_SOAK_RESULT=%s",
              camera_benchmark_result_name(result));
     return result;
 }

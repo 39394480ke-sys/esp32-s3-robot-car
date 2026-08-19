@@ -3,8 +3,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define BENCHMARK_MAX_INTERVALS 20000U
-#define BENCHMARK_MAX_WINDOWS 600U
+#define BENCHMARK_MAX_INTERVALS 4096U
+#define BENCHMARK_MAX_WINDOWS 60U
 
 typedef struct {
     int64_t start_us;

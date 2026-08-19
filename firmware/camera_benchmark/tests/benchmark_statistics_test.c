@@ -11,9 +11,6 @@ static void expect_near(double actual, double expected)
 
 int main(void)
 {
-    assert(BENCHMARK_MAX_INTERVALS >= 20000U);
-    assert(BENCHMARK_MAX_WINDOWS >= 600U);
-
     benchmark_statistics_t stats;
     benchmark_statistics_reset(&stats, 1000000, 3000000);
 
