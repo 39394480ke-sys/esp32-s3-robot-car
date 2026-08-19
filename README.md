@@ -14,7 +14,7 @@
 - 完整 STEP 装配文件和实物照片
 - 已验证的硬件状态、遗留问题和安全注意事项
 
-本仓库不包含完整机器人控制固件或算法。`firmware/camera_benchmark` 是独立的 ESP-IDF 硬件探测与 Camera-only Benchmark 工程，不驱动整车功能。STEP 是机械几何的权威来源；未提供的材料、紧固件、尺寸工程图和打印参数不会在文档中推测补全。
+本仓库不包含完整机器人控制固件或算法。`firmware/camera_benchmark` 和 `firmware/camera_streaming` 是归档的独立 ESP-IDF 相机实验工程，不驱动整车功能；D2 图传没有通过稳定性 Gate，已停止维护。STEP 是机械几何的权威来源；未提供的材料、紧固件、尺寸工程图和打印参数不会在文档中推测补全。
 
 ## 硬件概览
 
@@ -38,7 +38,10 @@
 - [硬件验证状态](docs/validation.md)
 - [D0 ESP32-S3 平台实测基线](docs/d0-platform-baseline.md)
 - [D1 OV3660 纯摄像头性能测试报告](docs/d1-camera-benchmark-report.md)
+- [D2 局域网实时图传实验报告](docs/d2-camera-streaming-report.md)
 - [D0/D1 Camera Benchmark 工程](firmware/camera_benchmark/README.md)
+- [D2 Camera Streaming 实验工程](firmware/camera_streaming/README.md)
+- [D2 PC MJPEG Receiver](tools/README.md)
 - [机械 CAD 说明](mechanical/README.md)
 - [高清接线图](assets/diagrams/wiring-overview.png)
 

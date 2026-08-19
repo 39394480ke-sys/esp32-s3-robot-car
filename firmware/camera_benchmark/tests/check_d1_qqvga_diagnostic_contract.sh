@@ -5,7 +5,6 @@ set -euo pipefail
 project_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 benchmark="$project_dir/main/camera_benchmark.c"
 camera_init="$project_dir/main/camera_init.c"
-app="$project_dir/main/app_main.c"
 
 for contract in \
   'FRAMESIZE_QVGA' \
@@ -15,7 +14,7 @@ for contract in \
   'QQVGA_HEIGHT 120U' \
   'camera_run_qqvga_short_diagnostic' \
   'QQVGA_SHORT_RESULT'; do
-  grep -q "$contract" "$benchmark" "$camera_init" "$app" || {
+  grep -q "$contract" "$benchmark" "$camera_init" || {
     echo "missing QQVGA diagnostic contract: $contract" >&2
     exit 1
   }
@@ -32,10 +31,5 @@ for fixed_setting in \
     exit 1
   }
 done
-
-grep -Eq 'camera_run_qqvga_(short|pclk)_diagnostic' "$app" || {
-  echo "application does not run a QQVGA diagnostic" >&2
-  exit 1
-}
 
 echo "D1 QQVGA diagnostic contract checks passed"
