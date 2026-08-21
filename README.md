@@ -14,7 +14,7 @@
 - 完整 STEP 装配文件和实物照片
 - 已验证的硬件状态、遗留问题和安全注意事项
 
-本仓库不包含固件、算法、控制参数、构建环境或可直接烧录的程序。STEP 是机械几何的权威来源；未提供的材料、紧固件、尺寸工程图和打印参数不会在文档中推测补全。
+本仓库包含阶段 A 的整车控制固件基础。`firmware/robot_control` 当前实现电机命令、安全停止、控制 watchdog、Wi-Fi、Web 遥控、软件急停、双轴云台、OLED 表情和固定短句 TTS；编码器与 AI 尚未接入。STEP 是机械几何的权威来源；未提供的材料、紧固件、尺寸工程图和打印参数不会在文档中推测补全。
 
 ## 硬件概览
 
@@ -36,6 +36,7 @@
 - [供电、接口与接线](docs/wiring.md)
 - [机械装配与布线](docs/assembly.md)
 - [硬件验证状态](docs/validation.md)
+- [阶段 A 整车控制固件](firmware/robot_control/README.md)
 - [机械 CAD 说明](mechanical/README.md)
 - [高清接线图](assets/diagrams/wiring-overview.png)
 

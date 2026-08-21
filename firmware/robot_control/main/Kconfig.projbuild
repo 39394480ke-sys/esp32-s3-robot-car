@@ -1,0 +1,72 @@
+menu "Robot control"
+
+config ROBOT_LEFT_MOTOR_INVERTED
+    bool "Invert the left motor direction"
+    default n
+    help
+        Reverse the left motor's logical forward direction without changing
+        the documented wiring.
+
+config ROBOT_RIGHT_MOTOR_INVERTED
+    bool "Invert the right motor direction"
+    default y
+    help
+        Reverse the right motor's logical forward direction without changing
+        the documented wiring.
+
+config ROBOT_WIFI_SSID
+    string "Wi-Fi SSID"
+    default ""
+
+config ROBOT_WIFI_PASSWORD
+    string "Wi-Fi password"
+    default ""
+
+menu "Gimbal"
+
+config ROBOT_YAW_MIN_DEGREES
+    int "Yaw minimum angle"
+    range 0 180
+    default 45
+
+config ROBOT_YAW_CENTER_DEGREES
+    int "Yaw center angle"
+    range 0 180
+    default 90
+
+config ROBOT_YAW_MAX_DEGREES
+    int "Yaw maximum angle"
+    range 0 180
+    default 135
+
+config ROBOT_YAW_INVERTED
+    bool "Invert yaw servo output"
+    default y
+
+config ROBOT_YAW_TRIM_DEGREES
+    int "Yaw mechanical trim"
+    range -90 90
+    default 14
+
+config ROBOT_PITCH_MIN_DEGREES
+    int "Pitch minimum angle"
+    range 0 180
+    default 60
+
+config ROBOT_PITCH_CENTER_DEGREES
+    int "Pitch center angle"
+    range 0 180
+    default 90
+
+config ROBOT_PITCH_MAX_DEGREES
+    int "Pitch maximum angle"
+    range 0 180
+    default 120
+
+config ROBOT_PITCH_INVERTED
+    bool "Invert pitch servo output"
+    default n
+
+endmenu
+
+endmenu
