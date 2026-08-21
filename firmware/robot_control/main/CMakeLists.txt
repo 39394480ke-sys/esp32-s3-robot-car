@@ -1,0 +1,35 @@
+idf_component_register(
+    SRCS
+        "app_main.c"
+        "motor_control.c"
+        "motor_policy.c"
+        "oled_expression.c"
+        "oled_ui.c"
+        "robot_control.c"
+        "robot_state.c"
+        "robot_status.c"
+        "safety.c"
+        "servo_control.c"
+        "servo_policy.c"
+        "tts_control.c"
+        "tts_protocol.c"
+        "web_page.c"
+        "web_server.c"
+        "wifi_manager.c"
+    INCLUDE_DIRS "."
+    PRIV_REQUIRES
+        esp_driver_gpio
+        esp_driver_i2c
+        esp_driver_ledc
+        esp_driver_uart
+        esp_event
+        esp_http_server
+        esp_netif
+        esp_system
+        esp_timer
+        esp_wifi
+        freertos
+        json
+        log
+        nvs_flash
+)
