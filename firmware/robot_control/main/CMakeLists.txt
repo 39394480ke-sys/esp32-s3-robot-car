@@ -1,6 +1,8 @@
 idf_component_register(
     SRCS
         "app_main.c"
+        "desktop_idle.c"
+        "desktop_idle_policy.c"
         "motor_control.c"
         "motor_policy.c"
         "oled_expression.c"

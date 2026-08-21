@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "desktop_idle_policy.h"
 #include "motor_control.h"
 #include "motor_policy.h"
 #include "oled_expression.h"
@@ -124,6 +125,37 @@ static void test_servo_policy(void)
     assert(servo_policy_angle_to_duty(90, false, 16383U) == 1229U);
     assert(servo_policy_angle_to_duty(180, false, 16383U) == 2048U);
     assert(servo_policy_angle_to_duty(0, true, 16383U) == 2048U);
+}
+
+static void test_desktop_idle_policy(void)
+{
+    assert(!desktop_idle_policy_should_enter(true, false, true, 29999U, 0U));
+    assert(desktop_idle_policy_should_enter(true, false, true, 30000U, 0U));
+    assert(!desktop_idle_policy_should_enter(false, false, true, 30000U, 0U));
+    assert(!desktop_idle_policy_should_enter(true, true, true, 30000U, 0U));
+    assert(!desktop_idle_policy_should_enter(true, false, false, 30000U, 0U));
+    assert(!desktop_idle_policy_should_enter(true, false, true, 10U, 20U));
+
+    assert(desktop_idle_policy_random_delay(0U, 15000U, 45000U) == 15000U);
+    assert(desktop_idle_policy_random_delay(30000U, 15000U, 45000U) ==
+           45000U);
+    assert(desktop_idle_policy_random_delay(123U, 1000U, 1000U) == 1000U);
+
+    const servo_axis_limits_t yaw = {
+        .minimum = 45,
+        .center = 90,
+        .maximum = 135,
+    };
+    const servo_axis_limits_t narrow = {
+        .minimum = 85,
+        .center = 90,
+        .maximum = 95,
+    };
+    assert(desktop_idle_policy_offset_angle(&yaw, -10) == 80);
+    assert(desktop_idle_policy_offset_angle(&yaw, 10) == 100);
+    assert(desktop_idle_policy_offset_angle(&narrow, -10) == 85);
+    assert(desktop_idle_policy_offset_angle(&narrow, 10) == 95);
+    assert(desktop_idle_policy_offset_angle(NULL, 10) == 0);
 }
 
 static void test_oled_expressions(void)
@@ -255,6 +287,7 @@ int main(void)
 {
     test_motor_policy();
     test_servo_policy();
+    test_desktop_idle_policy();
     test_oled_expressions();
     test_tts_protocol();
     test_robot_control();
