@@ -23,6 +23,7 @@ cc \
   -I"$project_dir/tests/fakes" \
   -I"$project_dir/main" \
   "$project_dir/main/motor_policy.c" \
+  "$project_dir/main/desktop_idle_policy.c" \
   "$project_dir/main/oled_expression.c" \
   "$project_dir/main/servo_policy.c" \
   "$project_dir/main/tts_protocol.c" \

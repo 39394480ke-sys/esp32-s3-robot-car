@@ -1,5 +1,6 @@
 #include "esp_log.h"
 
+#include "desktop_idle.h"
 #include "oled_ui.h"
 #include "robot_control.h"
 #include "servo_control.h"
@@ -11,7 +12,7 @@ static const char *TAG = "robot_main";
 
 void app_main(void)
 {
-    ESP_LOGI(TAG, "Stage A robot control initialization");
+    ESP_LOGI(TAG, "Stage B desktop idle initialization");
     const esp_err_t result = robot_control_init();
     if (result != ESP_OK) {
         ESP_LOGE(TAG,
@@ -54,6 +55,15 @@ void app_main(void)
         return;
     }
 
+    const esp_err_t idle_result = desktop_idle_init();
+    if (idle_result != ESP_OK) {
+        robot_stop();
+        ESP_LOGE(TAG,
+                 "desktop idle initialization failed: %s; motors remain stopped",
+                 esp_err_to_name(idle_result));
+        return;
+    }
+
     const esp_err_t server_result = web_server_start();
     if (server_result != ESP_OK) {
         robot_stop();
@@ -64,5 +74,5 @@ void app_main(void)
     }
 
     ESP_LOGI(TAG,
-             "motors stopped; gimbal centered; waiting for Web control commands");
+             "motors stopped; desktop idle enabled; waiting for Web control commands");
 }

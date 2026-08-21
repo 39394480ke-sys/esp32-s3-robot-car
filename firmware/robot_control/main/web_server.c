@@ -12,6 +12,7 @@
 #include "esp_log.h"
 #include "esp_netif_ip_addr.h"
 
+#include "desktop_idle.h"
 #include "oled_ui.h"
 #include "robot_control.h"
 #include "robot_status.h"
@@ -152,6 +153,11 @@ static esp_err_t status_handler(httpd_req_t *request)
     cJSON_AddStringToObject(body,
                            "last_stop_reason",
                            stop_reason_name(state.last_stop_reason));
+    cJSON_AddStringToObject(body, "mode", robot_mode_name(state.mode));
+    cJSON_AddBoolToObject(body, "idle_enabled", state.idle_enabled);
+    cJSON_AddStringToObject(body,
+                           "idle_action",
+                           desktop_idle_action_name(state.idle_action));
     cJSON_AddNumberToObject(body, "yaw", state.yaw);
     cJSON_AddNumberToObject(body, "pitch", state.pitch);
     cJSON_AddNumberToObject(body, "yaw_min", state.yaw_limits.minimum);
@@ -196,6 +202,7 @@ static bool parse_command(const char *value, robot_motion_command_t *command)
 
 static esp_err_t drive_handler(httpd_req_t *request)
 {
+    desktop_idle_record_user_activity();
     char query[96];
     char command_value[16];
     char speed_value[8];
@@ -245,6 +252,7 @@ static esp_err_t drive_handler(httpd_req_t *request)
 
 static esp_err_t stop_handler(httpd_req_t *request)
 {
+    desktop_idle_record_user_activity();
     robot_stop();
     return send_result(request, "200 OK", true, "stopped");
 }
@@ -252,17 +260,20 @@ static esp_err_t stop_handler(httpd_req_t *request)
 static esp_err_t estop_handler(httpd_req_t *request)
 {
     robot_estop_activate();
+    desktop_idle_cancel_for_estop();
     return send_result(request, "200 OK", true, "emergency stop active");
 }
 
 static esp_err_t clear_estop_handler(httpd_req_t *request)
 {
+    desktop_idle_record_user_activity();
     robot_estop_clear();
     return send_result(request, "200 OK", true, "emergency stop cleared");
 }
 
 static esp_err_t servo_handler(httpd_req_t *request)
 {
+    desktop_idle_record_user_activity();
     char query[64];
     char axis[8];
     char angle_value[8];
@@ -316,6 +327,7 @@ static esp_err_t servo_handler(httpd_req_t *request)
 
 static esp_err_t oled_handler(httpd_req_t *request)
 {
+    desktop_idle_record_user_activity();
     char query[48];
     char expression[16];
     const size_t query_length = httpd_req_get_url_query_len(request);
@@ -346,6 +358,7 @@ static esp_err_t oled_handler(httpd_req_t *request)
 
 static esp_err_t tts_handler(httpd_req_t *request)
 {
+    desktop_idle_record_user_activity();
     char query[40];
     char phrase_name[16];
     const size_t query_length = httpd_req_get_url_query_len(request);
@@ -378,6 +391,45 @@ static esp_err_t tts_handler(httpd_req_t *request)
     return send_result(request, "200 OK", true, phrase_name);
 }
 
+static esp_err_t idle_handler(httpd_req_t *request)
+{
+    char query[32];
+    char enabled_value[8];
+    const size_t query_length = httpd_req_get_url_query_len(request);
+    if (query_length == 0U || query_length >= sizeof(query) ||
+        httpd_req_get_url_query_str(request, query, sizeof(query)) != ESP_OK ||
+        httpd_query_key_value(query,
+                              "enabled",
+                              enabled_value,
+                              sizeof(enabled_value)) != ESP_OK) {
+        return send_result(request, "400 Bad Request", false, "invalid query");
+    }
+
+    bool enabled;
+    if (strcmp(enabled_value, "true") == 0) {
+        enabled = true;
+    } else if (strcmp(enabled_value, "false") == 0) {
+        enabled = false;
+    } else {
+        return send_result(request,
+                           "400 Bad Request",
+                           false,
+                           "enabled must be true or false");
+    }
+
+    const esp_err_t result = desktop_idle_set_enabled(enabled);
+    if (result != ESP_OK) {
+        return send_result(request,
+                           "500 Internal Server Error",
+                           false,
+                           "desktop idle control failed");
+    }
+    return send_result(request,
+                       "200 OK",
+                       true,
+                       enabled ? "desktop idle enabled" : "desktop idle disabled");
+}
+
 static esp_err_t register_uri(const httpd_uri_t *uri)
 {
     const esp_err_t result = httpd_register_uri_handler(s_server, uri);
@@ -394,7 +446,7 @@ esp_err_t web_server_start(void)
     }
 
     httpd_config_t config = HTTPD_DEFAULT_CONFIG();
-    config.max_uri_handlers = 9U;
+    config.max_uri_handlers = 10U;
     config.lru_purge_enable = true;
     esp_err_t result = httpd_start(&s_server, &config);
     if (result != ESP_OK) {
@@ -413,6 +465,7 @@ esp_err_t web_server_start(void)
         {.uri = "/api/servo", .method = HTTP_POST, .handler = servo_handler},
         {.uri = "/api/oled", .method = HTTP_POST, .handler = oled_handler},
         {.uri = "/api/tts", .method = HTTP_POST, .handler = tts_handler},
+        {.uri = "/api/idle", .method = HTTP_POST, .handler = idle_handler},
     };
 
     for (size_t index = 0U; index < sizeof(routes) / sizeof(routes[0]); ++index) {

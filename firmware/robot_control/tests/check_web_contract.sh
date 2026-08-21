@@ -13,7 +13,8 @@ for route in \
   '"/api/drive"' \
   '"/api/stop"' \
   '"/api/estop"' \
-  '"/api/estop/clear"'; do
+  '"/api/estop/clear"' \
+  '"/api/idle"'; do
   grep -q "$route" "$server_file" || {
     echo "missing Web route: $route" >&2
     exit 1
@@ -54,9 +55,22 @@ for legacy_getter in \
 done
 
 for status_field in \
-  robot_id uptime wifi rssi motion speed estop yaw pitch expression tts_busy; do
+  robot_id uptime wifi rssi motion speed estop yaw pitch expression tts_busy \
+  mode idle_enabled idle_action; do
   grep -q "\"$status_field\"" "$server_file" || {
     echo "missing /status field: $status_field" >&2
+    exit 1
+  }
+done
+
+for idle_contract in \
+  'id=\"idleToggle\"' \
+  'Desktop Idle ON' \
+  '/api/idle?enabled=' \
+  'data.mode' \
+  'data.idle_action'; do
+  grep -Fq "$idle_contract" "$page_file" || {
+    echo "missing Desktop Idle Web contract: $idle_contract" >&2
     exit 1
   }
 done

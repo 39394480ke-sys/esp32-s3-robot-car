@@ -5,6 +5,7 @@
 
 #include "esp_netif_ip_addr.h"
 
+#include "desktop_idle.h"
 #include "oled_expression.h"
 #include "robot_types.h"
 #include "servo_policy.h"
@@ -31,6 +32,9 @@ typedef struct {
     bool watchdog_armed;
     bool estop;
     robot_stop_reason_t last_stop_reason;
+    robot_mode_t mode;
+    bool idle_enabled;
+    desktop_idle_action_t idle_action;
 
     int16_t yaw;
     int16_t pitch;
