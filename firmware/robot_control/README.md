@@ -21,6 +21,8 @@ rendering. Fixed UTF-8 phrases can be sent to the existing UART TTS module.
 - 50 Hz SG90 control on GPIO1/GPIO2 with requested angles clamped to
   conservative configured bounds
 - Web sliders for direct Yaw and Pitch control
+- Web Pitch commands are throttled to the latest position every 40 milliseconds
+  so continuous dragging remains responsive without irregular debounce jumps
 - eight vector-rendered OLED expressions selected through one capability API
 - four fixed TTS phrases over UART1 at 9600 baud on GPIO38/GPIO39
 - one unified robot snapshot containing uptime, Wi-Fi, motion, safety, gimbal,

@@ -93,7 +93,9 @@ for contract in \
   'sendBeacon' \
   'KeyW' \
   'ArrowUp' \
-  'Space'; do
+  'Space' \
+  'PITCH_THROTTLE_MS=40' \
+  'pitch.addEventListener.*schedulePitch'; do
   grep -q "$contract" "$page_file" || {
     echo "missing browser safety contract: $contract" >&2
     exit 1
